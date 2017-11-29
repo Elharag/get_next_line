@@ -6,7 +6,7 @@
 /*   By: elbenkri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/21 17:20:55 by elbenkri          #+#    #+#             */
-/*   Updated: 2017/11/28 17:41:55 by elbenkri         ###   ########.fr       */
+/*   Updated: 2017/11/29 19:26:50 by elbenkri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,24 +42,37 @@ int		get_next_line(const int fd, char **line)
 	char		*buf;
 	static char	*tmp = NULL;
 
-	buf = ft_strnew(BUFF_SIZE);
-	printf("tmp :%s\n", tmp);
-	if (tmp != 0)
+	if (BUFF_SIZE <= 0)
+		return (0);
+	if (fd < 0)
+		return (-1);
+	buf = ft_strnew(BUFF_SIZE + 1);
+	*line = ft_strnew(BUFF_SIZE + 1);
+	if (tmp != 0 && !ft_strchr(tmp, '\n'))
 		*line = ft_strjoin(tmp, "");
+	else if (tmp != 0 && ft_strchr(tmp, '\n'))
+	{
+		tmp = (char *)ft_memcdcpy(*line, tmp, '\n', ft_strlen(tmp));
+		*line = ft_strdup(*line);
+		return (1);
+	}
 	while ((ret = read(fd, buf, BUFF_SIZE)))
 	{
-		if (ret == -1)
-			return (-1);
-		if (strchr(buf, '\n'))
+		if (ft_strchr(buf, '\n'))
 		{
 			tmp = (char *)ft_memcdcpy(*line, buf, '\n', ft_strlen(buf));
-			*line = ft_strdup(*line);
+//			*line = ft_strdup(*line);
 			return (1);
 		}
 		else
 			*line = ft_strjoin(*line, buf);
 	}
-	return (ret);
+	if (tmp != 0 && ret == 0)
+	{
+		tmp = 0;
+		return (1);
+	}
+	return (0);
 }
 
 int		main(int argc, char **argv)
@@ -67,15 +80,20 @@ int		main(int argc, char **argv)
 	int		fd;
 	char	*ok;
 
-	ok = (char*)malloc(sizeof(char) * 20);
+//	ok = (char*)malloc(sizeof(char) * 20);
 	if (argc < 2)
 		return (0);
 	fd = open(argv[1], O_RDONLY);
-	printf("retour :%d\n", get_next_line(fd, &ok));
+/*	printf("%d\n", get_next_line(fd, &ok));
 	printf("fin :%s\n", ok);
-	printf("retour 2: %d\n", get_next_line(fd, &ok));
-	printf("fin 2: %s\n", ok);
-	printf("retour 2: %d\n", get_next_line(fd, &ok));
-	printf("fin 2: %s\n", ok);
+	printf("%d\n", get_next_line(fd, &ok));
+	printf("fin :%s\n", ok);
+	printf("%d\n", get_next_line(fd, &ok));
+	printf("fin :%s\n", ok);*/
+	while (get_next_line(fd, &ok) > 0)
+	{
+		printf("fin :%s\n", ok);
+	}
+//		printf("fin :%s\n", ok);
 	return (0);
 }
