@@ -1,21 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_strcdup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: elbenkri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/24 13:50:45 by elbenkri          #+#    #+#             */
-/*   Updated: 2017/12/02 21:36:38 by elbenkri         ###   ########.fr       */
+/*   Created: 2017/12/02 21:52:25 by elbenkri          #+#    #+#             */
+/*   Updated: 2017/12/02 22:07:35 by elbenkri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# define BUFF_SIZE 9999
+#include "libft.h"
 
-# include <fcntl.h>
+char	*ft_strcdup(const char *s1, int c)
+{
+	int		i;
+	char	*str;
 
-int		get_next_line(const int fd, char **line);
-
-#endif
+	i = 0;
+	while (s1[i] != c)
+		i++;
+	str = (char *)malloc(sizeof(char) * i + 1);
+	i = 0;
+	while (s1[i] && s1[i] != c)
+	{
+		str[i] = s1[i];
+		i++;
+	}
+	str[i] = 0;
+	return (str);
+}

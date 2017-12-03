@@ -6,7 +6,7 @@
 #    By: elbenkri <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/08 17:04:50 by elbenkri          #+#    #+#              #
-#    Updated: 2017/11/14 05:15:17 by elbenkri         ###   ########.fr        #
+#    Updated: 2017/12/02 22:06:55 by elbenkri         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -81,6 +81,8 @@ SRCS	=	ft_strlen.c \
 			ft_strrev.c \
 			ft_lstlast.c \
 			ft_lstpushparams.c \
+			ft_strcdup.c \
+			ft_strjoin_free.c \
 
 OBJ		=	ft_strlen.o \
 			ft_strcmp.o \
@@ -147,6 +149,8 @@ OBJ		=	ft_strlen.o \
 			ft_strrev.o \
 			ft_lstlast.o \
 			ft_lstpushparams.o \
+			ft_strcdup.o \
+			ft_strjoin_free.o \
 
 HEADER	=	libft.h
 

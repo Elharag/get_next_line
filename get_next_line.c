@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: elbenkri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/21 17:20:55 by elbenkri          #+#    #+#             */
-/*   Updated: 2017/11/30 10:56:31 by elbenkri         ###   ########.fr       */
+/*   Created: 2017/12/02 05:38:55 by elbenkri          #+#    #+#             */
+/*   Updated: 2017/12/03 16:31:12 by elbenkri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,89 +14,55 @@
 #include "libft/libft.h"
 #include <stdio.h>
 
-static void    *ft_memccat(void *dst, const void *src, int c, size_t n)
+static int	ft_norm(char **line, char **tab, char **rst, int flags)
 {
-    size_t  i;
-	size_t	j;
-
-    i = 0;
-	j = ft_strlen((const char *)dst);
-    while (i < n)
-    {
-        if (((unsigned char *)src)[i] != (unsigned char)c)
-			((unsigned char *)dst)[j] = ((unsigned char *)src)[i];
-        if (((unsigned char *)src)[i] == (unsigned char)c)
+	if (flags == 1)
+	{
+		if (*tab != 0 && (*rst = ft_strchr(*tab, '\n')))
 		{
-			((unsigned char *)dst)[j] = 0;
-			return ((void *)src + i + 1);
+			*line = ft_strjoin_free(ft_strcdup(*tab, '\n'), 0);
+			*tab = *rst + 1;
+			return (1);
 		}
-		i++;
-		j++;
-    }
-    return (0);
+	}
+	else if (flags == 2)
+	{
+		if (tab[0] != 0 && ft_strlen(*tab) != 0)
+		{
+			tab[0][ft_strlen(*tab)] = 0;
+			*line = ft_strjoin_free(ft_strdup(*tab), 0);
+			*tab = 0;
+			return (1);
+		}
+	}
+	return (0);
 }
 
-int		get_next_line(const int fd, char **line)
+int			get_next_line(const int fd, char **line)
 {
 	int			ret;
 	char		*buf;
-	static char	*tmp[4096];
+	static char	*tab[4096];
+	char		*rst;
 
-	if (fd < 0)
-		return (EOF);
+	rst = NULL;
 	buf = ft_strnew(BUFF_SIZE + 1);
-	*line = ft_strnew(BUFF_SIZE + 1);
-	if (tmp[fd] != 0 && !ft_strchr(tmp[fd], '\n'))
-		*line = ft_strjoin(tmp[fd], "");
-	else if (tmp[fd] != 0 && ft_strchr(tmp[fd], '\n'))
-	{
-//		ft_putstr("olololo\n");
-		tmp[fd] = (char *)ft_memccat(*line, tmp[fd], '\n', ft_strlen(tmp[fd]));
-//		*line = ft_strdup(*line);
+	if (fd < 0 || fd > 4096 || (read(fd, "", 0) < 0))
+		return (-1);
+	if (ft_norm(line, &tab[fd], &rst, 1))
 		return (1);
-	}
 	while ((ret = read(fd, buf, BUFF_SIZE)))
 	{
-		if (ft_strchr(buf, '\n'))
+		buf[ret] = '\0';
+		if (!(rst = ft_strchr(buf, '\n')))
+			tab[fd] = ft_strjoin_free(tab[fd], buf);
+		if ((rst = ft_strchr(buf, '\n')))
 		{
-//			ft_putstr("okokok\n");
-			tmp[fd] = (char *)ft_memccat(*line, buf, '\n', ft_strlen(buf));
-//			*line = ft_strdup(*line);
+			*line = ft_strjoin_free(tab[fd], ft_strcdup(buf, '\n'));
+			tab[fd] = rst + 1;
 			return (1);
 		}
-		else
-			*line = ft_strjoin(*line, buf);
+		buf = ft_strnew(BUFF_SIZE + 1);
 	}
-	if (ret == 0)
-	{
-//		ft_putstr("okokoddfgfdk\n");
-		if (tmp[fd] == 0)
-		{
-			tmp[fd] = *line;
-			return (0);
-		}
-		else
-			tmp[fd] = 0;
-//		ft_putstr("odssdfkokosdfdssk\n");
-	}
-	return (1);
+	return (ft_norm(line, &tab[fd], &rst, 2));
 }
-/*
-int		main(int argc, char **argv)
-{
-	int		fd;
-	int		ret;
-	char	*ok;
-
-//	ok = (char*)malloc(sizeof(char) * 20);
-	if (argc < 2)
-		return (0);
-	fd = open(argv[1], O_RDONLY);
-	while ((ret = get_next_line(fd, &ok)) > 0)
-	{
-		printf("fin : %d %s\n", ret, ok);
-	}
-//		printf("fin :%s\n", ok);
-	return (0);
-}
-*/
