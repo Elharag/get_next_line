@@ -6,15 +6,39 @@
 /*   By: elbenkri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/02 05:38:55 by elbenkri          #+#    #+#             */
-/*   Updated: 2017/12/03 16:31:12 by elbenkri         ###   ########.fr       */
+/*   Updated: 2017/12/04 19:40:09 by elbenkri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include "libft/libft.h"
-#include <stdio.h>
 
-static int	ft_norm(char **line, char **tab, char **rst, int flags)
+char			*ft_strdup(char *s1)
+{
+	int			i;
+	char		*str;
+
+	i = 0;
+	if (s1 == 0)
+	{
+		if ((str = (char*)malloc(sizeof(*str) * 0 + 1)) == NULL)
+			return (0);
+	}
+	else
+	{
+		if ((str = (char*)malloc(sizeof(*str) * ft_strlen(s1) + 1)) == NULL)
+			return (0);
+		while (s1[i])
+		{
+			str[i] = s1[i];
+			i++;
+		}
+	}
+	str[i] = 0;
+	return (str);
+}
+
+static int		ft_norm(char **line, char **tab, char **rst, int flags)
 {
 	if (flags == 1)
 	{
@@ -38,7 +62,7 @@ static int	ft_norm(char **line, char **tab, char **rst, int flags)
 	return (0);
 }
 
-int			get_next_line(const int fd, char **line)
+int				get_next_line(const int fd, char **line)
 {
 	int			ret;
 	char		*buf;
@@ -55,10 +79,10 @@ int			get_next_line(const int fd, char **line)
 	{
 		buf[ret] = '\0';
 		if (!(rst = ft_strchr(buf, '\n')))
-			tab[fd] = ft_strjoin_free(tab[fd], buf);
+			tab[fd] = ft_strjoin_free(ft_strdup(tab[fd]), buf);
 		if ((rst = ft_strchr(buf, '\n')))
 		{
-			*line = ft_strjoin_free(tab[fd], ft_strcdup(buf, '\n'));
+			*line = ft_strjoin_free(ft_strdup(tab[fd]), ft_strcdup(buf, '\n'));
 			tab[fd] = rst + 1;
 			return (1);
 		}

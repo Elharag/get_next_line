@@ -6,13 +6,13 @@
 /*   By: elbenkri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 13:50:45 by elbenkri          #+#    #+#             */
-/*   Updated: 2017/12/02 21:36:38 by elbenkri         ###   ########.fr       */
+/*   Updated: 2017/12/04 19:36:21 by elbenkri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# define BUFF_SIZE 9999
+# define BUFF_SIZE 1
 
 # include <fcntl.h>
 
