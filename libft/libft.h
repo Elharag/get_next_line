@@ -90,7 +90,7 @@ void				ft_lstpushback(t_list **lst, t_list *elem);
 char				*ft_strrev(char *str);
 t_list				*ft_lstlast(t_list *lst);
 t_list				*ft_lstpushparams(int argc, char **argv);
-char				*ft_strcdup(const char *s1, int c);
+char				*ft_strcdup(char *s1, int c);
 char				*ft_strjoin_free(char *s1, char *s2);
 
 #endif

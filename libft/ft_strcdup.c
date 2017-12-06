@@ -10,23 +10,26 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include "libft.h"
 
-char	*ft_strcdup(const char *s1, int c)
+char	*ft_strcdup(char *s1, int c)
 {
-	int		i;
-	char	*str;
+  int		i;
+  char	*str;
 
-	i = 0;
-	while (s1[i] != c)
-		i++;
-	str = (char *)malloc(sizeof(char) * i + 1);
-	i = 0;
-	while (s1[i] && s1[i] != c)
-	{
-		str[i] = s1[i];
-		i++;
-	}
-	str[i] = 0;
-	return (str);
+  i = 0;
+  if (s1 == 0)
+    return (0);
+  while (s1[i] && s1[i] != c)
+    i++;
+  str = (char *)malloc(sizeof(char) * i + 1);
+  i = 0;
+  while (s1[i] && s1[i] != c)
+    {
+      str[i] = s1[i];
+      i++;
+    }
+  str[i] = 0;
+  return (str);
 }
