@@ -1,21 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: elbenkri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/24 13:50:45 by elbenkri          #+#    #+#             */
-/*   Updated: 2017/12/04 19:36:21 by elbenkri         ###   ########.fr       */
+/*   Created: 2017/12/07 17:38:55 by elbenkri          #+#    #+#             */
+/*   Updated: 2017/12/07 23:43:47 by elbenkri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# define BUFF_SIZE 1
-
+# define BUFF_SIZE 42
 # include <fcntl.h>
 
-int		get_next_line(const int fd, char **line);
+typedef struct	s_var
+{
+	int	ret;
+	char	*tab[4096];
+	char	*rst;
+	char	*buf;
+}		t_var;
+
+int		get_next_line(int fd, char **line);
 
 #endif

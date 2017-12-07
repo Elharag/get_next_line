@@ -5,91 +5,58 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: elbenkri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/12/02 05:38:55 by elbenkri          #+#    #+#             */
-/*   Updated: 2017/12/04 19:40:09 by elbenkri         ###   ########.fr       */
+/*   Created: 2017/12/07 17:38:55 by elbenkri          #+#    #+#             */
+/*   Updated: 2017/12/07 23:42:09 by elbenkri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include "libft/libft.h"
-#include <stdio.h>
 
-char			*ft_strdup(char *s1)
+int	ft_is_newline(t_var *var, int fd, char **line)
 {
-  int		i;
-  char		*str;
-
-  i = 0;
-  if (s1 == 0)
+  if (var->tab[fd] != 0 && !(var->rst = ft_strchr(var->tab[fd], '\n')))
+    var->tab[fd] = ft_strjoin_free(ft_strdup(var->tab[fd]), 0);
+  if (var->tab[fd] != 0 && (var->rst = ft_strchr(var->tab[fd], '\n')))
     {
-      if ((str = (char*)malloc(sizeof(*str) * 0 + 1)) == NULL)
-	return (0);
+      *line = ft_strjoin_free(ft_strcdup(var->tab[fd], '\n'), 0);
+      var->tab[fd] = var->rst + 1;
+      return (1);
     }
-  else
+  else if (var->ret == 0 && var->tab[fd] != 0)
     {
-      if ((str = (char*)malloc(sizeof(*str) * ft_strlen(s1) + 1)) == NULL)
-	return (0);
-      while (s1[i])
+      *line = ft_strjoin_free(ft_strcdup(var->tab[fd], '\n'), 0);
+      if (ft_strlen(var->tab[fd]) != 0)
 	{
-	  str[i] = s1[i];
-	  i++;
-	}
-      if (s1[0] != 0)
-	free(s1);
-    }
-  str[i] = 0;
-  return (str);
-}
-
-static int		ft_norm(char **line, char **tab, char **rst, int flags)
-{
-  if (flags == 1)
-    {
-      if (*tab != 0 && (*rst = ft_strcdup(ft_strchr(*tab, '\n'), 0)))
-	{
-	  *line = ft_strjoin_free(ft_strcdup(*tab, '\n'), 0);
-	  *tab = *rst + 1;
+	  var->tab[fd] = 0;
 	  return (1);
 	}
-    }
-  else if (flags == 2)
-    {
-      if (*tab != 0 && ft_strlen(*tab) != 0)
-	{
-	  tab[0][ft_strlen(*tab)] = 0;
-	  *line = ft_strjoin_free(*tab = ft_strdup(*tab), 0);
-	  *tab = 0;
-	  return (1);
-	}
+      var->tab[fd] = 0;
     }
   return (0);
 }
 
-int				get_next_line(const int fd, char **line)
+int	get_next_line(int fd, char **line)
 {
-  int			ret;
-  char			*buf;
-  static char		*tab[4096];
-  char			*rst;
+  static t_var	var;
 
-  rst = NULL;
-  buf = ft_strnew(BUFF_SIZE + 1);
-  if (fd < 0 || fd > 4096 || (read(fd, "", 0) < 0))
+  if (fd < 0 || fd > 4096 || read(fd, "", 0) < 0)
     return (-1);
-  if (ft_norm(line, &tab[fd], &rst, 1))
+  if (var.tab[fd] != 0 && (ft_is_newline(&var, fd, line)))
     return (1);
-  while ((ret = read(fd, buf, BUFF_SIZE)))
+  var.buf = ft_strnew(BUFF_SIZE + 1);
+  while ((var.ret = read(fd, var.buf, BUFF_SIZE)))
     {
-      buf[ret] = '\0';
-      if (!(rst = ft_strchr(buf, '\n')))
-	  tab[fd] = ft_strjoin_free(tab[fd] = ft_strdup(tab[fd]), buf);
-      if ((rst = ft_strchr(buf, '\n')))
+      var.buf[var.ret] = '\0';
+      if (!(var.rst = ft_strchr(var.buf, '\n')))
+	var.tab[fd] = ft_strjoin_free(var.tab[fd], var.buf);
+      if ((var.rst = ft_strchr(var.buf, '\n')))
 	{
-	  *line = ft_strjoin_free(tab[fd] = ft_strdup(tab[fd]), ft_strcdup(buf, '\n'));
-	  tab[fd] = rst + 1;
+	  *line = ft_strjoin_free(var.tab[fd], ft_strcdup(var.buf, '\n'));
+	  var.tab[fd] = var.rst + 1;
 	  return (1);
 	}
-      buf = ft_strnew(BUFF_SIZE + 1);
+      var.buf = ft_strnew(BUFF_SIZE + 1);
     }
-  return (ft_norm(line, &tab[fd], &rst, 2));
+  return (ft_is_newline(&var, fd, line)) ? (1) : (0);
 }
